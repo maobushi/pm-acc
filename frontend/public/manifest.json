@@ -1,0 +1,19 @@
+{
+	"theme_color": "#000000",
+	"background_color": "#006eff",
+	"orientation": "any",
+	"display": "standalone",
+	"dir": "auto",
+	"lang": "en-US",
+	"name": "DelphiNews",
+	"short_name": "delphinews",
+	"description": "Future News Media",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "/icon512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
