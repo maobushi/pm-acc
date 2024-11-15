@@ -27,9 +27,26 @@ export const MarketCreationModal = () => {
 
 	const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(e.target.value);
-		// モックAPIコール
-		const mockSuggestions = await fetchSuggestions(e.target.value);
-		setSuggestions(mockSuggestions);
+
+		try {
+			// OpenAIのエンベディングAPIを呼び出し
+			const response = await fetch("/api/openai/embedding", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(e.target.value),
+			});
+
+			const embeddingData = await response.json();
+			console.log("タイトルのエンベディング:", embeddingData);
+
+			// 既存の類似マーケット取得処理
+			const mockSuggestions = await fetchSuggestions(e.target.value);
+			setSuggestions(mockSuggestions);
+		} catch (error) {
+			console.error("エンベディングの取得に失敗:", error);
+		}
 	};
 
 	const handleCreate = () => {
