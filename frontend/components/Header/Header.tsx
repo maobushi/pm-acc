@@ -2,6 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { DynamicWidget } from "@/lib/dynamic";
 
 const Header = () => {
 	const pathname = usePathname();
@@ -27,6 +28,7 @@ const Header = () => {
 			<h1 className="flex-1 text-xl font-semibold text-white text-center">
 				{getPageTitle()}
 			</h1>
+			<DynamicWidget />
 			<Avatar className="w-8 h-8">
 				<AvatarImage className="rounded-full" src="/maobushi.jpg" />
 				<AvatarFallback>CN</AvatarFallback>
