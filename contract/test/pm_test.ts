@@ -49,25 +49,29 @@ describe("Prediction Market Test.", function () {
 		)
 
 		const initLPAmount = 100000
-		const buyAmount = 200
+		const buyAmount = 200n
 		
 		const marketId = await pmf.getAllMarkets();
 		expect(await erc20.balanceOf(deployer)).to.eq(20000000000000)
 		await erc20.approve(marketId[0], initLPAmount)
-
+		console.log("CHECK1:",await erc20.allowance(deployer.address, marketId[0]))
+		
 		// 取得したマーケットアドレスを使ってPMコントラクトインスタンスを作成
 		// 初期流動性を追加するために、deployerアカウントで実行	
 		const market = await ethers.getContractAt("PMT", marketId[0]);
 		expect(await market.owner()).to.equal(deployer.address);
-		console.log(await market.getQuestion());
-
+		
 		// 初期流動性のバランスチェック
 		await market.addInitLiqidity(initLPAmount);
+		// console.log(await erc20.balanceOf(marketId[0]))
+		expect(await erc20.balanceOf(marketId[0])).to.eq(initLPAmount);
 		expect(await market.getBalanceOfOptionPool(1)).to.eq(initLPAmount);
 		expect(await market.getBalanceOfOptionPool(2)).to.eq(initLPAmount);
+		
 		// オプショントークン保有者情報チェック
 		expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(initLPAmount);
 		expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);
+		console.log("CHECK2:",await erc20.allowance(deployer.address, marketId[0]))
 
 		// exchange test
 		console.log("market is: ", await market.getAddress());
@@ -80,25 +84,42 @@ describe("Prediction Market Test.", function () {
 		// console.log(await market.getBalanceOfOptionPool(1))
 		// console.log(await market.getBalanceOfOptionPool(2))
 		console.log(
-			"START: ",
+			"START	:",
 			await market.getBalanceOfCollateralPool(),
 			await market.getBalanceOfOptionPool(1),
 			await market.getBalanceOfOptionPool(2),
 		);
 		let dy1, dy2;
+		/* <<=== 購入 ===>> */
 		dy1 = await om.calculateOptionChange(await market.getAddress(), 1, buyAmount, true);
 		console.log(`dx(USDC):${buyAmount} ===> dy(opt1):${dy1[0]}`)
-		await om.buyOption(await market.getAddress(), 1, buyAmount)
-		expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(dy1[0]);
-		expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);
 
+		await erc20.approve(marketId[0], buyAmount)
+		// await erc20.approve(await om.getAddress(), buyAmount)
+		// console.log(await erc20.allowance(deployer.address, marketId[0]))
+		// console.log(await erc20.allowance(deployer.address, await om.getAddress()))
+		await market.depositCollateralHandler(50);
+		await market.depositCollateralHandler(150);
+		// console.log(await market.getUserDeposits(deployer.address))
+		await om.buyOption(marketId[0], 1, buyAmount)
+
+		// expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(dy1[0]);
+		// expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);
+
+		/* <<=== 売却 ===>> */
+		// 1.optionのdeposit
+		// 2.deposit枚数を現在価格でusdcの枚数を算出
+		// 3.erc20にapprove
+		// 4.redeemの実行
 		dy2 = await om.calculateOptionChange(await market.getAddress(), 1, dy1[0], false);
 		console.log(`dx(opt1):${dy1[0]} ===> dy(USDC):${dy2[0]}`)
-		await om.sellOption(await market.getAddress(), 1, dy1[0])
+
+		// await erc20.approve(marketId[0], dy1[0])
+		// await om.sellOption(await market.getAddress(), 1, dy1[0])
 		// expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(dy2[0]);
 		// expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);
 		console.log(
-			"RESULT: ",
+			"RESULT	:",
 			await market.getBalanceOfCollateralPool(),
 			await market.getBalanceOfOptionPool(1),
 			await market.getBalanceOfOptionPool(2),
