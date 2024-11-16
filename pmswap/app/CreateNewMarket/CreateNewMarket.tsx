@@ -15,7 +15,8 @@ const CreateNewMarket = () => {
 
 	const handleCreateMarket = () => {
 		//ここから色々処理かけるよ
-
+		alert("hello")
+		
 		console.log("Creating new market:", newMarketName, selectedOracle);
 	};
 
