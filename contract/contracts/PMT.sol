@@ -11,6 +11,7 @@ import "hardhat/console.sol";
 contract PMT is ERC1155, Ownable {
     string public question;
     address public oracleAddress;
+    address public exchangeAddress;
     address public collateralToken;
     uint256 public collateralPoolBalance;
     uint256 public fee;
@@ -31,6 +32,7 @@ contract PMT is ERC1155, Ownable {
     constructor(
         string memory _question,
         address _oracleAddress,
+        address _exchangeAddress,
         address _collateralToken,
         uint256 _fee,
         uint256 _startDate,
@@ -185,6 +187,7 @@ contract PMT is ERC1155, Ownable {
     function getAllData() external view returns (
         string memory _question,
         address _oracleAddress,
+        address _exchangeAddress,
         address _collateralToken,
         uint256 _collateralPoolBalance,
         uint256 _fee,
@@ -193,7 +196,7 @@ contract PMT is ERC1155, Ownable {
         string[] memory _options,
         bool _initLiquidityFlag
     ) {
-        return (question, oracleAddress, collateralToken, collateralPoolBalance, fee, startDate, executionDate, options, initLiquidityFlag);
+        return (question, oracleAddress, exchangeAddress, collateralToken, collateralPoolBalance, fee, startDate, executionDate, options, initLiquidityFlag);
     }
 
     function onERC1155Received(
