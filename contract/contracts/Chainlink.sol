@@ -6,8 +6,6 @@
 // import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/FunctionsClient.sol";
 // import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/libraries/FunctionsRequest.sol";
 
-
-
 // contract ChainlinkFunctionsExample is FunctionsClient {
 //     using FunctionsRequest for FunctionsRequest.Request;
 

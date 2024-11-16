@@ -105,11 +105,12 @@ contract PMT is ERC1155, Ownable {
         userDepositsOptionObserver[msg.sender][opt] += amount;
     }
 
-    function redeemHandler(uint256 dy) external onlyAllowedContract {
+    function redeemHandler(address to, uint256 dy) external onlyAllowedContract {
         require(
-            IERC20(collateralToken).transfer(msg.sender, dy),
+            IERC20(collateralToken).transfer(to, dy),
             "Collateral token transfer failed"
         );
+        console.log(">>",msg.sender);
     }
     /* <<===  SETTER FUNCTIONS  ===>> */
     function setBalanceOfOptionPool(uint256 opt, uint256 amount) external onlyAllowedContract {

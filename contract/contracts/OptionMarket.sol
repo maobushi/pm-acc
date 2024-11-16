@@ -105,10 +105,20 @@ contract OptionMarket {
 		uint256 roundValue = (2 * remainder >= optionBalanceAfter) ? (temp + 1) : temp;  // 四捨五入
 		return roundValue;
 	}
-	function _sellAfterResults(address oracle, uint256 opt) internal {
+	function _sellAfterResults(address target, address oracle, uint256 opt) internal {
 		// TODO: check oracle result
 		IOA o = IOA(oracle);
 		require(o.getResult() == opt, "The price of this option is 0.");
+		IPMT t = IPMT(target);
+		uint256 collateralBalanceBefore = t.getBalanceOfCollateralPool();
+		uint256 optionBalanceBefore = t.getBalanceOfOptionPool(opt);
+		uint256 userOptionBalance = t.balanceOfUserOption(msg.sender, opt);
+
+		safeRedeem[target][msg.sender] = userOptionBalance;
+
+		t.setBalanceCollateralPool(collateralBalanceBefore - userOptionBalance);
+		t.setBalanceOfOptionPool(opt, optionBalanceBefore + userOptionBalance);
+		t.setUserTokenBalances(msg.sender, opt, 0);
 		isTransactionActive[msg.sender] = true;
 	}
 	function _changeState(address target, uint256 opt, uint256 dy, uint256 dx, uint256 collateralAfter, uint256 optionBalanceAfter) internal {
@@ -130,13 +140,12 @@ contract OptionMarket {
 
 		// 期日が過ぎているのであればoracleを参照する
 		if (executionDate < block.timestamp) {
-			_sellAfterResults(oracleAddress, opt);
+			_sellAfterResults(target, oracleAddress, opt);
 			return 0;
 		}
 		uint256 collateralBalanceBefore = t.getBalanceOfCollateralPool();
 		uint256 optionBalanceBefore = t.getBalanceOfOptionPool(opt);
 		
-		// uint256 k = collateralBalanceBefore * optionBalanceBefore;
 		uint256 k = collateralBalanceBefore * optionBalanceBefore;
 
 		require(dx <= optionBalanceBefore, "Insufficient options in pool");
@@ -145,12 +154,6 @@ contract OptionMarket {
 		uint256 collateralAfter = _toRound(k, optionBalanceAfter);
 		dy = collateralBalanceBefore - collateralAfter;
 		_changeState(target, opt, dy, dx, collateralAfter, optionBalanceAfter);
-		// t.setBalanceCollateralPool(collateralAfter);
-		// t.setBalanceOfOptionPool(opt, optionBalanceAfter);
-		// t.setUserTokenBalances(msg.sender, opt, dx);
-		// t.setUserRedeemAmount(msg.sender, dy);
-		// safeRedeem[target][msg.sender] = dy;
-		// isTransactionActive[msg.sender] = true;
 		return dy;
 	}
 
@@ -169,9 +172,8 @@ contract OptionMarket {
 		require(isTransactionActive[msg.sender] == true, "Now transaction not active.");
 		require(safeRedeem[target][msg.sender] > 0, "Not deposited.");
 		IPMT t = IPMT(target);
-		t.redeemHandler(safeRedeem[target][msg.sender]);
+		t.redeemHandler(msg.sender, safeRedeem[target][msg.sender]);
 		safeRedeem[target][msg.sender] = 0;
-		t.setUserRedeemAmount(msg.sender, 0);
 		isTransactionActive[msg.sender] = false;
 	}
 }

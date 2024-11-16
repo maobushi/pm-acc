@@ -15,7 +15,7 @@ interface IPMT is IERC1155 {
     function mintHandler(uint256 opt, uint256 amount) external;
     function burnHandler(uint256 opt, uint256 amount) external;
     function approveHandler(uint256 amount) external;
-    function redeemHandler(uint256 dy) external;
+    function redeemHandler(address to, uint256 dy) external;
     function depositCollateralHandler(uint256 amount) external;
 
     function split(uint256 collateralTokenId, uint256 amount, uint256[] calldata optionIds) external;
