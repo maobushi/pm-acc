@@ -68,26 +68,30 @@ contract OptionMarket {
 		uint256 collateralBalanceBefore = t.getBalanceOfCollateralPool();
 		uint256 optionBalanceBefore = t.getBalanceOfOptionPool(opt);
 
-		uint256[] memory ks;
-		for (uint256 i = 0; i < t.getOptions().length; i++) {
-			ks[i] = collateralBalanceBefore * t.getBalanceOfOptionPool(i + 1);
-		}
+		// uint256[] memory ks;
+		// for (uint256 i = 0; i < t.getOptions().length; i++) {
+		// 	ks[i] = collateralBalanceBefore * t.getBalanceOfOptionPool(i + 1);
+		// }
 
 		uint256 k = collateralBalanceBefore * optionBalanceBefore;
 		uint256 collateralAfter;
 		uint256 optionBalanceAfter;
 
 		if (isBuy) {
+			require(t.getUserCollateralDeposits(msg.sender) == dx, "Deposit amount does not match.");
+
 			collateralAfter = collateralBalanceBefore + dx;
 			optionBalanceAfter = k / collateralAfter;
 			dy = optionBalanceBefore - optionBalanceAfter;
 
+			// t.depositHandler(dx);
 			t.setBalanceCollateralPool(collateralAfter);
 			t.setBalanceOfOptionPool(opt, optionBalanceAfter);
-
 			t.setUserTokenBalances(msg.sender, opt, dy);
+			t.setUserCollateralDeposits(msg.sender, 0);
 		} else {
 			require(dx <= optionBalanceBefore, "Insufficient options in pool");
+			require(t.getUserOptionDeposits(msg.sender, opt) == dx, "Deposit amount does not match.");
 
 			optionBalanceAfter = optionBalanceBefore + dx;
 
@@ -100,8 +104,9 @@ contract OptionMarket {
 
 			t.setBalanceCollateralPool(collateralAfter);
 			t.setBalanceOfOptionPool(opt, optionBalanceAfter);
-		
 			t.setUserTokenBalances(msg.sender, opt, dx);
+			t.setUserRedeemAmount(msg.sender, dy);
+			// t.redeemHandler(dy);
 			// t.burnHandler(opt, dx);
     	}
         return dy;
@@ -113,4 +118,10 @@ contract OptionMarket {
     function sellOption(address target, uint256 opt, uint256 dx) public returns (uint256 acquiredOptions) {
         return _adjustOption(target, opt, dx, false); // isBuy = false
     }
+	function approveRedeem() {
+
+	}
+	function redeemCollateral() {
+
+	}
 }
