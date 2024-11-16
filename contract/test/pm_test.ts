@@ -35,12 +35,14 @@ describe("Prediction Market Test.", function () {
 		const { erc20, oracle, pmf, om, deployer } = await loadFixture(deployFixture);
 		const oracleAddr = await oracle.getAddress();
 		const collateralAddr = await erc20.getAddress();
+		const exchange = await om.getAddress();
 		// console.log(oracleAddr, collateralAddr)
 
 		await pmf.createMarket(
 			"Presidential Election Winner 2024",
 			2,
 			collateralAddr,
+			exchange,
 			oracleAddr,
 			3,
 			1704067200,
