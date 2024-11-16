@@ -8,7 +8,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 		<DynamicContextProvider
 			theme="auto"
 			settings={{
-				environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID!,
+				environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID || '',
 				walletConnectors: [EthereumWalletConnectors],
 			}}
 		>
