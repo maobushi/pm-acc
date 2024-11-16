@@ -2,7 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "./interface/IPMT.sol";
+import "../interface/IPMT.sol";
+import "../interface/IOracle.sol";
 import "hardhat/console.sol";
 
 interface IOA {
@@ -107,7 +108,7 @@ contract OptionMarket {
 	}
 	function _sellAfterResults(address target, address oracle, uint256 opt) internal {
 		// TODO: check oracle result
-		IOA o = IOA(oracle);
+		IOracle o = IOracle(oracle);
 		require(o.getResult() == opt, "The price of this option is 0.");
 		IPMT t = IPMT(target);
 		uint256 collateralBalanceBefore = t.getBalanceOfCollateralPool();
