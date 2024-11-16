@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TabContent } from "./components/TabContent";
 import { MarketCreationModal } from "./MarketCreationModal/MarketCreationModal";
+import { SuggestionList } from "./components/SuggestionList";
+
 interface TabItem {
 	id: string;
 	label: string;
@@ -28,10 +30,50 @@ interface TabItem {
 	}[];
 }
 
+interface Suggestion {
+	title: string;
+}
+
+const fetchSuggestions = async (query: string): Promise<Suggestion[]> => {
+	try {
+		const response = await fetch(`/api/markets/explore?query=${query}`);
+		const { data } = await response.json();
+
+		// クエリに基づいてフィルタリング
+		return data;
+	} catch (error) {
+		console.error("検索候補の取得に失敗:", error);
+		return [];
+	}
+};
+
 export default function ExplorePage() {
 	const [activeTabId, setActiveTabId] = React.useState(defaultTabs[0].id);
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
-	
+	const [searchQuery, setSearchQuery] = React.useState("");
+	const [searchSuggestions, setSearchSuggestions] = React.useState<
+		Suggestion[]
+	>([]);
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setSearchQuery(value);
+
+		if (value.length > 2) {
+			try {
+				// URLエンコードしてAPIに送信
+				const encodedQuery = encodeURIComponent(value);
+				const suggestions = await fetchSuggestions(encodedQuery);
+				setSearchSuggestions(suggestions);
+			} catch (error) {
+				console.error("検索候補の取得に失敗:", error);
+				setSearchSuggestions([]);
+			}
+		} else {
+			setSearchSuggestions([]);
+		}
+	};
+
 	return (
 		<div className="flex flex-col h-full bg-gray-900 text-gray-100">
 			<div className="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 shadow-lg">
@@ -42,7 +84,14 @@ export default function ExplorePage() {
 							className="w-full pl-10 pr-4 py-2 bg-gray-800 text-gray-100 border-gray-700 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 							placeholder="Explore Markets"
 							type="search"
+							value={searchQuery}
+							onChange={handleSearch}
 						/>
+						{searchQuery.length > 2 && (
+							<div className="absolute w-full mt-2">
+								<SuggestionList suggestions={searchSuggestions} />
+							</div>
+						)}
 					</div>
 				</div>
 				<div className="flex overflow-x-auto scrollbar-hide">
@@ -111,7 +160,7 @@ const defaultTabs: TabItem[] = [
 				title: "SpaceX successfully launches Starship",
 				category: "Space",
 				posts: 52890,
-				image: "/placeholder.svg?height=400&width=600",
+				image: "/news/3.png",
 			},
 			{
 				title: "New AI breakthrough in natural language processing",

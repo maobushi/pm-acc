@@ -13,7 +13,7 @@ const Header = () => {
 				return "Headlines";
 			case "/search":
 				return "Search";
-			case "/library":
+			case "/following":
 				return "Following";
 			case "/mypage":
 				return "Mypage";

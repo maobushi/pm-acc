@@ -47,13 +47,13 @@ const Footer = () => {
 			</Button>
 			<Button
 				variant="ghost"
-				className={getButtonStyle("Following", "/library")}
-				onClick={() => router.push("/library")}
+				className={getButtonStyle("Following", "/following")}
+				onClick={() => router.push("/following")}
 				style={{ backgroundColor: "transparent" }}
 			>
 				<div
 					className={` rounded-lg ${
-						pathname === "/library" ? "bg-gray-950" : ""
+						pathname === "/following" ? "bg-gray-950" : ""
 					}`}
 				>
 					<Users
