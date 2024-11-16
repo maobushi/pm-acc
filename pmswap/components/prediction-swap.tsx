@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Plus, X, Wallet } from "lucide-react";
+import { Plus, Wallet } from "lucide-react";
 import {
 	Select,
 	SelectContent,
@@ -18,6 +18,7 @@ import {
 	Market,
 	mockMarkets,
 } from "@/app/api/openai/searchmarkets/demoMarketData";
+import CreateNewMarket from "@/app/CreateNewMarket/CreateNewMarket";
 
 export function PredictionSwap() {
 	const [input, setInput] = useState("");
@@ -27,8 +28,6 @@ export function PredictionSwap() {
 	const [markets, setMarkets] = useState<Market[]>(mockMarkets);
 	const [selectedMarkets, setSelectedMarkets] = useState<number[]>([]);
 	const [createMode, setCreateMode] = useState(false);
-	const [newMarketName, setNewMarketName] = useState("");
-	const [selectedOracle, setSelectedOracle] = useState("Chainlink");
 
 	const handleSwap = async () => {
 		try {
@@ -82,37 +81,6 @@ export function PredictionSwap() {
 		setSelectedMarkets((prev) =>
 			prev.includes(id) ? prev.filter((mId) => mId !== id) : [...prev, id]
 		);
-	};
-
-	const handleCreateMarket = () => {
-		setMarkets((prev) => [
-			...prev,
-			{
-				id: Date.now(),
-				name: newMarketName,
-				token1: token,
-				token2: "USDC",
-				odds: 2.0,
-				exchange: "Polymarket",
-				oracle: {
-					name: selectedOracle.toLowerCase(),
-					address: "0x1234...5678",
-					isVerified: true,
-				},
-				creator: {
-					name: "You",
-					address: "0x8765...4321",
-					isVerified: false,
-				},
-				expiryDate: new Date(
-					Date.now() + 30 * 24 * 60 * 60 * 1000
-				).toISOString(),
-				isVerified: false,
-				isRisky: false,
-			},
-		]);
-		setCreateMode(false);
-		setNewMarketName("");
 	};
 
 	// 期限までの残り時間を計算する関数を追加
@@ -337,51 +305,7 @@ export function PredictionSwap() {
 									Create New Market
 								</Button>
 							)}
-							{createMode && (
-								<div className="space-y-4 bg-[#1a2420] p-4 rounded-xl border border-emerald-900/50">
-									<div className="flex justify-between items-center">
-										<h3 className="text-lg font-medium text-emerald-300">
-											Create New Market
-										</h3>
-										<Button
-											onClick={() => setCreateMode(false)}
-											variant="ghost"
-											size="icon"
-											className="text-emerald-400 hover:text-emerald-300"
-										>
-											<X className="w-5 h-5" />
-										</Button>
-									</div>
-									<Input
-										placeholder="Market Name"
-										value={newMarketName}
-										onChange={(e) => setNewMarketName(e.target.value)}
-										className="w-full bg-[#243430] border-emerald-900 text-lg placeholder:text-emerald-700 focus:ring-emerald-500 focus:border-emerald-500"
-									/>
-
-									<Select
-										value={selectedOracle}
-										onValueChange={setSelectedOracle}
-									>
-										<SelectTrigger className="w-full bg-[#243430] border-emerald-900 focus:ring-emerald-500 focus:border-emerald-500">
-											<SelectValue placeholder="Select Oracle" />
-										</SelectTrigger>
-										<SelectContent className="bg-[#1a2420] border-emerald-900">
-											<SelectItem value="Chainlink">Chainlink</SelectItem>
-											<SelectItem value="API3">API3</SelectItem>
-											<SelectItem value="Band Protocol">
-												Band Protocol
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<Button
-										onClick={handleCreateMarket}
-										className="w-full py-2 text-lg font-medium bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
-									>
-										Create Market
-									</Button>
-								</div>
-							)}
+							{createMode && <CreateNewMarket />}
 							{selectedMarkets.length > 0 && (
 								<Button
 									onClick={() =>
