@@ -31,6 +31,7 @@ interface TabItem {
 export default function ExplorePage() {
 	const [activeTabId, setActiveTabId] = React.useState(defaultTabs[0].id);
 	const [isModalOpen, setIsModalOpen] = React.useState(false);
+	
 	return (
 		<div className="flex flex-col h-full bg-gray-900 text-gray-100">
 			<div className="sticky top-0 z-10 bg-gray-900 border-b border-gray-800 shadow-lg">

@@ -1,18 +1,20 @@
 export interface PredictionMarket {
-	marketId: number;
+	marketId: string;
 	marketTitle: string;
 	marketDescription: string;
 	marketThumbnail: string;
 	marketCreatedAt: number;
 	marketEndTime: number;
 	marketStatus: string;
-	marketMarketCap: number;
+	marketCap: number;
 	marketParticipants: number;
 	marketYesPrice: number;
 	marketNoPrice: number;
 	marketNftHolderAddress: string[];
 	marketOracleAddress: string[];
 	marketOption: PredictionMarketOption[];
+	marketVectorData: number[];
+	marketCreatorAddress: string[];
 }
 export interface PredictionMarketOption {
 	optionId: number;
@@ -32,8 +34,8 @@ export interface PredictionMarketOption {
 // Market Interface
 export interface MarketWidget {
 	newsId: number;
-	marketId: number;
-	marketName: string;
+	marketId: string;
+	marketTitle: string;
 	marketPrice: number;
 	marketChange24h: number;
 	marketVolume: number;

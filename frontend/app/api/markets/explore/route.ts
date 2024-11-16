@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
-import { demoMarketsData } from "../demoMarketsData";
-
+import { createClient } from "@/utils/supabase/server";
 export async function GET() {
-	return NextResponse.json({ demoMarketsData });
+	const supabase = await createClient();
+	const { data, error } = await supabase.from("markets").select("*");
+	if (error) {
+		return NextResponse.json({ error: error.message }, { status: 400 });
+	}
+	return NextResponse.json({ data });
 }

@@ -29,17 +29,23 @@ export const MarketCreationModal = () => {
 		setTitle(e.target.value);
 
 		try {
+			const fetchSupabaseDB = async () => {
+				const response = await fetch("/api/markets/explore");
+				const data = await response.json();
+				console.log("Supabase DB:", data);
+			};
+			fetchSupabaseDB();
 			// OpenAIのエンベディングAPIを呼び出し
-			const response = await fetch("/api/openai/embedding", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(e.target.value),
-			});
+			// const response = await fetch("/api/openai/embedding", {
+			// 	method: "POST",
+			// 	headers: {
+			// 		"Content-Type": "application/json",
+			// 	},
+			// 	body: JSON.stringify(e.target.value),
+			// });
 
-			const embeddingData = await response.json();
-			console.log("タイトルのエンベディング:", embeddingData);
+			// const embeddingData = await response.json();
+			// console.log("タイトルのエンベディング:", embeddingData);
 
 			// 既存の類似マーケット取得処理
 			const mockSuggestions = await fetchSuggestions(e.target.value);

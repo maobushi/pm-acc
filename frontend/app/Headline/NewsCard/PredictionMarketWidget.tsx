@@ -38,7 +38,7 @@ const PredictionMarketWidget = ({ market }: { market: MarketWidget }) => {
 
 				<div className="mb-4">
 					<p className="text-sm text-white font-semibold leading-snug">
-						{market.marketName}
+						{market.marketTitle}
 					</p>
 				</div>
 
