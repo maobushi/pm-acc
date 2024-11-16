@@ -12,7 +12,6 @@ contract PMTFactory {
         string memory _question,
         uint256 _optionCount,
         address _collateralToken,
-        address _exchange,
         address _oracle,
         uint256 _fee,
         uint256 _startDate,
@@ -24,7 +23,6 @@ contract PMTFactory {
         PMT newMarket = new PMT(
             _question,
             _oracle,
-            _exchange,
             _collateralToken,
             _fee,
             _startDate,

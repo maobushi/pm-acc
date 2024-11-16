@@ -6,7 +6,7 @@ import "./interface/IPMT.sol";
 import "hardhat/console.sol";
 
 interface IOA {
-	function getOutcome() external view returns (uint256);
+	function getResult() external view returns (uint256);
 }
 
 contract OptionMarket {
@@ -65,11 +65,6 @@ contract OptionMarket {
 	function buyOption(address target, uint256 opt, uint256 dx) public returns (uint256 acquiredOptions, uint256 dy) {
 		require(isTransactionActive[msg.sender] == false, "Now transaction active.");
         IPMT t = IPMT(target);
-		// (string memory question, address oracleAddress, 
-		// 	address collateralToken, uint256 collateralPoolBalance, 
-		// 	uint256 fee, uint256 startDate, 
-		// 	uint256 executionDate, string[] memory options, 
-		// 	bool initLiquidityFlag) = t.getAllData();
 		(, , , , , , , string[] memory options, bool initLiquidityFlag) = t.getAllData();
 		require(initLiquidityFlag == true, "This market is not open.");
 		require(opt < options.length, "Invalid option selected");
@@ -113,7 +108,7 @@ contract OptionMarket {
 	function _sellAfterResults(address oracle, uint256 opt) internal {
 		// TODO: check oracle result
 		IOA o = IOA(oracle);
-		require(o.getOutcome() == opt, "The price of this option is 0.");
+		require(o.getResult() == opt, "The price of this option is 0.");
 		isTransactionActive[msg.sender] = true;
 	}
 	function _changeState(address target, uint256 opt, uint256 dy, uint256 dx, uint256 collateralAfter, uint256 optionBalanceAfter) internal {

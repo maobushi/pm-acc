@@ -11,7 +11,6 @@ import "hardhat/console.sol";
 contract PMT is ERC1155, Ownable {
     string public question;
     address public oracleAddress;
-    address public exchangeAddress;
     address public collateralToken;
     uint256 public collateralPoolBalance;
     uint256 public fee;
@@ -27,12 +26,10 @@ contract PMT is ERC1155, Ownable {
     mapping(uint256 => uint256) public optionPoolBalances;  // オプショントークンのプール
     mapping(address => uint256) public userDepositsCollateralObserver;
     mapping(address => mapping(uint256 => uint256)) public userDepositsOptionObserver;
-    mapping(address => uint256) public userRedeemAmount;
 
     constructor(
         string memory _question,
         address _oracleAddress,
-        address _exchangeAddress,
         address _collateralToken,
         uint256 _fee,
         uint256 _startDate,
@@ -135,10 +132,6 @@ contract PMT is ERC1155, Ownable {
         userDepositsOptionObserver[user][opt] = amount;
     }
 
-    function setUserRedeemAmount(address user, uint256 dy) external onlyAllowedContract {
-        userRedeemAmount[user] += dy;
-    }
-
     /* <<===  GETTER FUNCTIONS  ===>> */
     function balanceOfUserOption(address user, uint256 optionId) external view returns (uint256) {
         return userTokenBalances[user][optionId];
@@ -160,9 +153,9 @@ contract PMT is ERC1155, Ownable {
         return userDepositsOptionObserver[user][opt];
     }
 
-    function getUserRedeemAmount(address user) external view returns (uint256) {
-        return userRedeemAmount[user];
-    }
+    // function getUserRedeemAmount(address user) external view returns (uint256) {
+    //     return userRedeemAmount[user];
+    // }
 
     // function getQuestion() external view returns (string memory) {
     //     return question;
@@ -187,7 +180,6 @@ contract PMT is ERC1155, Ownable {
     function getAllData() external view returns (
         string memory _question,
         address _oracleAddress,
-        address _exchangeAddress,
         address _collateralToken,
         uint256 _collateralPoolBalance,
         uint256 _fee,
@@ -196,7 +188,7 @@ contract PMT is ERC1155, Ownable {
         string[] memory _options,
         bool _initLiquidityFlag
     ) {
-        return (question, oracleAddress, exchangeAddress, collateralToken, collateralPoolBalance, fee, startDate, executionDate, options, initLiquidityFlag);
+        return (question, oracleAddress, collateralToken, collateralPoolBalance, fee, startDate, executionDate, options, initLiquidityFlag);
     }
 
     function onERC1155Received(

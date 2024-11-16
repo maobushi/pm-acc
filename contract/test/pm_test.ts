@@ -42,7 +42,6 @@ describe("Prediction Market Test.", function () {
 			"Presidential Election Winner 2024",
 			2,
 			collateralAddr,
-			exchange,
 			oracleAddr,
 			3,
 			1704067200,

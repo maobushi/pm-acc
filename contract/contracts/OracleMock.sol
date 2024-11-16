@@ -6,13 +6,15 @@ contract OracleMock {
 
 	mapping(address =>  string) oracleHash;
 
-    constructor() {}
+    constructor() {
+		result = 1;
+	}
 
-	function setOutcome(uint256 _optionId) public {
+	function setResult(uint256 _optionId) public {
 		result = _optionId;
 	}
 
-	function getOutcome() public view returns (uint256) {
+	function getResult() public view returns (uint256) {
 		return result;
 	}
 }
