@@ -236,7 +236,16 @@ export function PredictionSwap() {
 														<span className="text-blue-300 flex items-center">
 															{market.creator.isVerified ? (
 																<>
-																	{market.creator.name}
+																	{market.creator.name === "nouns dao" ? (
+																		<>
+																			<Avatar className="h-4 w-4 mr-1">
+																				<AvatarImage src="/logo/nouns.png" alt="Nouns" />
+																			</Avatar>
+																			{market.creator.name}
+																		</>
+																	) : (
+																		market.creator.name
+																	)}
 																	<svg
 																		className="w-3 h-3 ml-1 text-blue-400"
 																		viewBox="0 0 24 24"
