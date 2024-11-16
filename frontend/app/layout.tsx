@@ -37,7 +37,7 @@ export default function RootLayout({
 					className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] bg-gray-900`}
 				>
 					<Header />
-					<main>{children}</main>
+					{children}
 					<Footer />
 				</body>
 			</Providers>
