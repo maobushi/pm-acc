@@ -3,9 +3,9 @@ import Headline from "@/app/Headline/Headline";
 
 const page = () => {
 	return (
-		<div>
+		<main>
 			<Headline />
-		</div>
+		</main>
 	);
 };
 
