@@ -116,7 +116,7 @@ describe("Prediction Market Test.", function () {
 		
 		await om.sellOption(await market.getAddress(), 1, dy1[0]);
 		await om.redeemCollateral(marketId[0]);
-		console.log("balsnceOf	:", await erc20.balanceOf(marketId[0]))
+		// console.log("balsnceOf	:", await erc20.balanceOf(marketId[0]))
 		// await om.approveRedeem(marketId[0]);
 		// expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(dy2[0]);
 		// expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);

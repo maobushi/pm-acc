@@ -17,6 +17,7 @@ contract PMT is ERC1155, Ownable {
     uint256 public startDate;
     uint256 public executionDate;
     string[] public options;
+
     address public allowedContract;
     bool initLiquidityFlag = false;
 
@@ -82,17 +83,17 @@ contract PMT is ERC1155, Ownable {
     }
 
     /* <<=== TRADING MANAGER ===>> */
-    function mintHandler(uint256 opt, uint256 amount) external onlyAllowedContract {
-        require(opt > 0, "Invalid option ID");
-        _mint(address(this), opt, amount, "");
-        optionPoolBalances[opt] += amount; 
-    }
+    // function mintHandler(uint256 opt, uint256 amount) external onlyAllowedContract {
+    //     require(opt > 0, "Invalid option ID");
+    //     _mint(address(this), opt, amount, "");
+    //     optionPoolBalances[opt] += amount; 
+    // }
  
-    function burnHandler(uint256 opt, uint256 amount) external onlyAllowedContract {
-        require(opt > 0, "Invalid option ID");
-        _burn(address(this), opt, amount);
-        optionPoolBalances[opt] -= amount; 
-    }
+    // function burnHandler(uint256 opt, uint256 amount) external onlyAllowedContract {
+    //     require(opt > 0, "Invalid option ID");
+    //     _burn(address(this), opt, amount);
+    //     optionPoolBalances[opt] -= amount; 
+    // }
 
     function depositCollateralHandler(uint256 amount) external onlyAllowedContract {
         require(
@@ -161,20 +162,38 @@ contract PMT is ERC1155, Ownable {
         return userRedeemAmount[user];
     }
 
-    function getQuestion() external view returns (string memory) {
-        return question;
-    }
+    // function getQuestion() external view returns (string memory) {
+    //     return question;
+    // }
 
-    function getOptions() external view returns (string[] memory) {
-        return options;
-    }
+    // function getOptions() external view returns (string[] memory) {
+    //     return options;
+    // }
 
-    function getCollateralToken() external view returns (address) {
-        return collateralToken;
-    }
+    // function getCollateralToken() external view returns (address) {
+    //     return collateralToken;
+    // }
 
-    function getFlag() external view returns (bool) {
-        return initLiquidityFlag;
+    // function getFlag() external view returns (bool) {
+    //     return initLiquidityFlag;
+    // }
+
+    // function getExecDate() external view returns (uint256) {
+    //     return executionDate;
+    // }
+
+    function getAllData() external view returns (
+        string memory _question,
+        address _oracleAddress,
+        address _collateralToken,
+        uint256 _collateralPoolBalance,
+        uint256 _fee,
+        uint256 _startDate,
+        uint256 _executionDate,
+        string[] memory _options,
+        bool _initLiquidityFlag
+    ) {
+        return (question, oracleAddress, collateralToken, collateralPoolBalance, fee, startDate, executionDate, options, initLiquidityFlag);
     }
 
     function onERC1155Received(

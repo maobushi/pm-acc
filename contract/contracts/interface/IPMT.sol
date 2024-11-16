@@ -32,10 +32,11 @@ interface IPMT is IERC1155 {
     function getUserOptionDeposits(address user, uint256 opt) external view returns (uint256);
     function getUserRedeemAmount(address user) external view returns (uint256);
 
-    function getQuestion() external view returns (string memory);
-	function getOptions() external view returns (string[] memory);
-    function getCollateralToken() external view returns (address);
-    function getFlag() external view returns (bool);
+    // function getQuestion() external view returns (string memory);
+	// function getOptions() external view returns (string[] memory);
+    // function getCollateralToken() external view returns (address);
+    // function getFlag() external view returns (bool);
+    // function getExecDate() external view returns (uint256);
 
     function setBalanceOfOptionPool(uint256 opt, uint256 amount) external;
     function setBalanceCollateralPool(uint256 amount) external;
@@ -43,4 +44,16 @@ interface IPMT is IERC1155 {
     function setUserCollateralDeposits(address user, uint256 amount) external;
     function setUserOptionDeposits(address user, uint256 opt, uint256 amount) external;
     function setUserRedeemAmount(address user, uint256 dy) external;
+
+    function getAllData() external view returns (
+        string memory question, 
+        address oracleAddress, 
+        address collateralToken, 
+        uint256 collateralPoolBalance, 
+        uint256 fee, 
+        uint256 startDate, 
+        uint256 executionDate, 
+        string[] memory options, 
+        bool initLiquidityFlag
+    );
 }
