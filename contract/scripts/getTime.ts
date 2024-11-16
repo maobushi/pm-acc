@@ -4,6 +4,8 @@ async function main() {
 	const C = await ethers.getContractFactory("GetTime");
 	const c = await C.deploy();
 	console.log("contract :", await c.getAddress());
+	console.log("Synchronization deviation correction: wait 20s...")
+	await new Promise((resolve) => setTimeout(resolve, 20000));
 	await verifyContract(await c.getAddress(), []);
 }
 

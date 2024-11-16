@@ -21,6 +21,11 @@ const config: HardhatUserConfig = {
 			url: `${process.env.POLYGON_TEST || ""}`,
 			accounts: [`0x${process.env.ACCOUNT_SEACRET || ""}`],
 		},
+		"mantle-testnet": {
+			url: "https://rpc.sepolia.mantle.xyz",
+			accounts: [`0x${process.env.ACCOUNT_SEACRET || ""}`],
+			chainId: 5003,
+		}
 	},
 	etherscan: {
 		// apiKey: process.env.ETHERSCAN || "",
