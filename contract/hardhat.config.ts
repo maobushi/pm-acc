@@ -23,9 +23,8 @@ const config: HardhatUserConfig = {
 		},
 	},
 	etherscan: {
-		// Your API key for Etherscan
-		// Obtain one at https://etherscan.io/
-		apiKey: process.env.ETHERSCAN || ""
+		// apiKey: process.env.ETHERSCAN || ""
+		apiKey: process.env.POLYGONSCAN || ""
 	},
 	sourcify: {
 		enabled: false,

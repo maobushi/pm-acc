@@ -110,7 +110,6 @@ contract PMT is ERC1155, Ownable {
             IERC20(collateralToken).transfer(to, dy),
             "Collateral token transfer failed"
         );
-        console.log(">>",msg.sender);
     }
     /* <<===  SETTER FUNCTIONS  ===>> */
     function setBalanceOfOptionPool(uint256 opt, uint256 amount) external onlyAllowedContract {

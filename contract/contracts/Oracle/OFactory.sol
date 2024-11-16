@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./OWorld.sol";
 import "./OChainlinkPrice.sol";
 
-contract OracleFactory {
+contract OFactory {
     address[] public deployedOracles;
 
     event OracleDeployed(address indexed oracleAddress, address indexed owner, address indexed worldIdOwner);
@@ -16,8 +16,8 @@ contract OracleFactory {
         return address(newOracle);
     }
 
-	function createOChainlinkPrice(address _dataFeed, uint256 settlementTimestamp) external returns (address) {
-        OChainlinkPrice newOracle = new OChainlinkPrice(msg.sender, _dataFeed, settlementTimestamp);
+	function createOChainlinkPrice(address _dataFeed, uint256 settlementTimestamp, uint256 _border) external returns (address) {
+        OChainlinkPrice newOracle = new OChainlinkPrice(msg.sender, _dataFeed, settlementTimestamp, _border);
         deployedOracles.push(address(newOracle));
         emit OracleDeployed(address(newOracle), msg.sender, _dataFeed);
         return address(newOracle);

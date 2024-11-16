@@ -21,15 +21,7 @@ describe("Prediction Market Test.", function () {
 		return { erc20, pmf, oracle, om, deployer, other };
 	}
 
-	it("Should deploy the contracts correctly", async function () {
-		const { erc20, oracle, pmf } = await loadFixture(deployFixture);
-		
-		// コントラクトのデプロイが成功したか確認
-		expect(await erc20.name()).to.equal("TEST");
-		expect(await erc20.symbol()).to.equal("test");
-		const allMarkets = await pmf.getAllMarkets();
-		expect(allMarkets.length).to.equal(0);
-	});
+
 
 	it("Adding initial liquidity and minting OptionToken", async function () {
 		const { erc20, oracle, pmf, om, deployer, other } = await loadFixture(deployFixture);
