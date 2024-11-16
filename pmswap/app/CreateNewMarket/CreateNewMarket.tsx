@@ -11,6 +11,10 @@ import {
 
 const CreateNewMarket = () => {
 	const [newMarketName, setNewMarketName] = useState("");
+	const [newCollateral, setNewCollateral] = useState("");
+	const [newStartTime, setNewStartTime] = useState("");
+	const [newEndTime, setNewEndTime] = useState("");
+	
 	const [selectedOracle, setSelectedOracle] = useState("");
 
 	const handleCreateMarket = () => {

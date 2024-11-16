@@ -23,8 +23,21 @@ const config: HardhatUserConfig = {
 		},
 	},
 	etherscan: {
-		// apiKey: process.env.ETHERSCAN || ""
-		apiKey: process.env.POLYGONSCAN || ""
+		// apiKey: process.env.ETHERSCAN || "",
+		// apiKey: process.env.POLYGONSCAN || "",
+		apiKey: {
+			'sepolia': 'empty'
+		},
+		customChains: [
+            {
+                network: "sepolia",
+                chainId: 11155111, // SepoliaのチェーンID
+                urls: {
+					apiURL: "https://eth-sepolia.blockscout.com/api",
+					browserURL: "https://eth-sepolia.blockscout.com"
+                }
+            }
+        ]
 	},
 	sourcify: {
 		enabled: false,

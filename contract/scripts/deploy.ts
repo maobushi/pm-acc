@@ -15,7 +15,9 @@ async function main() {
   console.log("PMTFactory :", await pmtf.getAddress());
   console.log("ORACLE     :", await oracle.getAddress());
   console.log("EXCHANGE   :", await exchange.getAddress());
-
+  // ここで全てのアドレスが取得されるまで待機、2分待っても無理ならreject
+  console.log("Synchronization deviation correction: wait 20s...")
+  await new Promise((resolve) => setTimeout(resolve, 20000));
   await verifyContract(await pmtf.getAddress(), []);
   await verifyContract(await oracle.getAddress(), []);
   await verifyContract(await exchange.getAddress(), []);
