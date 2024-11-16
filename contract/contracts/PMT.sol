@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "hardhat/console.sol";
 
+
 contract PMT is ERC1155, Ownable {
     string public question;
     address public oracleAddress;
@@ -106,7 +107,7 @@ contract PMT is ERC1155, Ownable {
 
     function redeemHandler(uint256 dy) external onlyAllowedContract {
         require(
-            IERC20(collateralToken).transferFrom(address(this), msg.sender, dy),
+            IERC20(collateralToken).transfer(msg.sender, dy),
             "Collateral token transfer failed"
         );
     }
@@ -170,6 +171,10 @@ contract PMT is ERC1155, Ownable {
 
     function getCollateralToken() external view returns (address) {
         return collateralToken;
+    }
+
+    function getFlag() external view returns (bool) {
+        return initLiquidityFlag;
     }
 
     function onERC1155Received(

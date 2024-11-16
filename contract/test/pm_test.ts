@@ -109,13 +109,15 @@ describe("Prediction Market Test.", function () {
 		/* <<=== 売却 ===>> */
 		// 1.optionのdeposit
 		// 2.deposit枚数を現在価格でusdcの枚数を算出
-		// 3.erc20にapprove
 		// 4.redeemの実行
 		dy2 = await om.calculateOptionChange(await market.getAddress(), 1, dy1[0], false);
 		console.log(`dx(opt1):${dy1[0]} ===> dy(USDC):${dy2[0]}`)
-
-		// await erc20.approve(marketId[0], dy1[0])
-		// await om.sellOption(await market.getAddress(), 1, dy1[0])
+		console.log("balsnceOf	:", await erc20.balanceOf(marketId[0]))
+		
+		await om.sellOption(await market.getAddress(), 1, dy1[0]);
+		await om.redeemCollateral(marketId[0]);
+		console.log("balsnceOf	:", await erc20.balanceOf(marketId[0]))
+		// await om.approveRedeem(marketId[0]);
 		// expect(await market.balanceOfUserOption(deployer.address, 1)).to.eq(dy2[0]);
 		// expect(await market.balanceOfUserOption(deployer.address, 2)).to.eq(initLPAmount);
 		console.log(

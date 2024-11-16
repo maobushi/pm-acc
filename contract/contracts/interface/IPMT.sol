@@ -35,6 +35,7 @@ interface IPMT is IERC1155 {
     function getQuestion() external view returns (string memory);
 	function getOptions() external view returns (string[] memory);
     function getCollateralToken() external view returns (address);
+    function getFlag() external view returns (bool);
 
     function setBalanceOfOptionPool(uint256 opt, uint256 amount) external;
     function setBalanceCollateralPool(uint256 amount) external;

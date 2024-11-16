@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 
 contract OptionMarket {
 	uint256 constant SCALE = 10**18;
+	mapping(address => bool) isTransactionActive;
 	mapping(address => mapping(address => uint256)) safeRedeem;
 
 	function onERC1155Received(
@@ -19,7 +20,6 @@ contract OptionMarket {
         // Handle the token transfer
         return this.onERC1155Received.selector;
     }
-
 	// CPMMを使用して動的価格を算出
 	function calculateOptionChange(
 		address target, 
@@ -115,7 +115,9 @@ contract OptionMarket {
     // }
 
 	function buyOption(address target, uint256 opt, uint256 dx) public returns (uint256 acquiredOptions, uint256 dy) {
+		require(isTransactionActive[msg.sender] == false, "Now transaction active.");
         IPMT t = IPMT(target);
+		
 		require(opt < t.getOptions().length, "Invalid option selected");
 		require(dx > 0, "Deposit amount must be greater than zero");
 
@@ -140,6 +142,7 @@ contract OptionMarket {
     }
 
     function sellOption(address target, uint256 opt, uint256 dx) public returns (uint256 dy) {
+		require(isTransactionActive[msg.sender] == false, "Now transaction active.");
         IPMT t = IPMT(target);
 		require(opt < t.getOptions().length, "Invalid option selected");
 		require(dx > 0, "Deposit amount must be greater than zero");
@@ -150,7 +153,7 @@ contract OptionMarket {
 		uint256 k = collateralBalanceBefore * optionBalanceBefore;
 
 		require(dx <= optionBalanceBefore, "Insufficient options in pool");
-		require(t.getUserOptionDeposits(msg.sender, opt) == dx, "Deposit amount does not match.");
+		// require(t.getUserOptionDeposits(msg.sender, opt) == dx, "Deposit amount does not match.");
 
 		uint256 optionBalanceAfter = optionBalanceBefore + dx;
 
@@ -165,36 +168,33 @@ contract OptionMarket {
 		t.setBalanceOfOptionPool(opt, optionBalanceAfter);
 		t.setUserTokenBalances(msg.sender, opt, dx);
 		t.setUserRedeemAmount(msg.sender, dy);
-
 		safeRedeem[target][msg.sender] = dy;
+		isTransactionActive[msg.sender] = true;
 		require(
-			IERC20(t.getCollateralToken()).approve(target, t.getUserRedeemAmount(msg.sender)),
-			"Approve failed"
+            // IERC20(t.getCollateralToken()).approve(target, safeRedeem[target][msg.sender]),
+			IERC20(t.getCollateralToken()).approve(target, dy),
+            "Collateral token transfer failed"
 		);
 		return dy;
 	}
 
-	// function approveRedeem(address target, uint256 opt) external {
-	// 	IPMT t = IPMT(target);
-	// 	//  t.getUserRedeemAmount();
-	// 	(uint256 dy, , ) = calculateOptionChange(target, opt, t.getUserOptionDeposits(msg.sender, opt), false);
-	// 	safeRedeem[target][msg.sender] = dy;
-	// 	// t.getUserOptionDeposits(msg.sender, opt);
-	// 	require(
-    //         IERC20(t.getCollateralToken()).approve(target, t.getUserRedeemAmount(msg.sender)),
-    //         "Collateral token transfer failed"
-	// 	);
-	// }
+	function approveRedeem(address target) external {
+		require(isTransactionActive[msg.sender] == true, "Now transaction not active.");
+		IPMT t = IPMT(target);
+		require(
+            // IERC20(t.getCollateralToken()).approve(target, safeRedeem[target][msg.sender]),
+			IERC20(t.getCollateralToken()).approve(address(this), safeRedeem[target][msg.sender]),
+            "Collateral token transfer failed"
+		);
+	}
 	// 引き出しの実行
 	function redeemCollateral(address target) external {
+		require(isTransactionActive[msg.sender] == true, "Now transaction not active.");
 		require(safeRedeem[target][msg.sender] > 0, "Not deposited.");
 		IPMT t = IPMT(target);
-		// require(condition);
-		require(
-            IERC20(t.getCollateralToken()).transferFrom(target, msg.sender, safeRedeem[target][msg.sender]),
-			"Redeem failed."
-		);
+		t.redeemHandler(safeRedeem[target][msg.sender]);
 		safeRedeem[target][msg.sender] = 0;
 		t.setUserRedeemAmount(msg.sender, 0);
+		isTransactionActive[msg.sender] = false;
 	}
 }
