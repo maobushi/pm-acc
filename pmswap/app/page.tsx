@@ -7,6 +7,7 @@ export default function Home() {
 			{/* <div className="min-h-screen bg-gradient-to-b from-[#0a0f0d] to-[#0d1410] text-white flex flex-col items-center justify-center p-4 font-bold">
 				<Header />
 				<SwapWidget /> */}
+			<w3m-button />
 			<PredictionSwap />
 			{/* </div> */}
 		</>
