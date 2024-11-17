@@ -51,6 +51,8 @@ const CreateNewMarket = () => {
 			const result = await response.json();
 			if (result.success) {
 			  alert("Market created successfully!");
+			//   result.
+			//   alert(`https://sepolia.etherscan.io/tx/${tx.hash}`)
 			} else {
 			  alert("Failed to create market: " + result.message);
 			}

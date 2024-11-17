@@ -17,12 +17,11 @@
     "@reown/appkit": "^1.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-<<<<<<< HEAD
+
     "ens-tools": "^0.0.14",
-    "ethers": "5.7.2",
-=======
+
     "ethers": "6.13.4",
->>>>>>> 9743640 (success create market)
+
     "lucide-react": "^0.460.0",
     "next": "15.0.3",
     "openai": "^4.72.0",
