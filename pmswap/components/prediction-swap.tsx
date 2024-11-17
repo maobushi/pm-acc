@@ -14,6 +14,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+
 import {
 	Market,
 	mockMarkets,
@@ -239,7 +240,10 @@ export function PredictionSwap() {
 																	{market.creator.name === "nouns dao" ? (
 																		<>
 																			<Avatar className="h-4 w-4 mr-1">
-																				<AvatarImage src="/logo/nouns.png" alt="Nouns" />
+																				<AvatarImage
+																					src="/logo/nouns.png"
+																					alt="Nouns"
+																				/>
 																			</Avatar>
 																			{market.creator.name}
 																		</>

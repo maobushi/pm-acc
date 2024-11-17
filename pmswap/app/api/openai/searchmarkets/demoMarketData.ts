@@ -624,7 +624,7 @@ export const mockMarkets: Market[] = [
 		},
 		creator: {
 			name: "Unknown Creator",
-			address: "0x9876...1234",
+			address: "0x225f137127d9067788314bc7fcc1f36746a3c3B5",
 			isVerified: false,
 		},
 		expiryDate: "2024-10-31T00:00:00Z",
