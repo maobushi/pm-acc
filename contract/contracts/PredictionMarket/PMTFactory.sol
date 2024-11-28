@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./PMT.sol";
+import "./PMTStateManager.sol";
 
 contract PMTFactory {
     address[] public allMarkets;
@@ -20,7 +20,7 @@ contract PMTFactory {
     ) external {
         require(_options.length == _optionCount, "Options count mismatch");
 
-        PMT newMarket = new PMT(
+        PMTStateManager newMarket = new PMTStateManager(
             _question,
             _oracle,
             _collateralToken,

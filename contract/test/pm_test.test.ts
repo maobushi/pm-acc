@@ -15,7 +15,7 @@ describe("Prediction Market Test.", function () {
 		const PMFactory = await ethers.getContractFactory("PMTFactory");
 		const pmf = await PMFactory.deploy();
 
-		const OptionMarket = await ethers.getContractFactory("OptionMarket");
+		const OptionMarket = await ethers.getContractFactory("OptionExchange");
 		const om = await OptionMarket.deploy();
 
 		return { erc20, pmf, oracle, om, deployer, other };

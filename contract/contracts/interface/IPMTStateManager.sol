@@ -3,14 +3,23 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 
-interface IPMT is IERC1155 {
+interface IPMTStateManager is IERC1155 {
+    struct MarketInfo {
+        string question;
+        address[3] addrRefs;
+        uint256[2] marketPeriod;
+        string[] options;
+        uint256 fee;
+    }
     // イベント
     event LiquidityAdded(address indexed user, uint256 amount);
     event OptionSplit(address indexed user, uint256 collateralTokenId, uint256 amount, uint256[] optionIds);
     event OptionMerged(address indexed user, uint256[] optionIds, uint256 collateralTokenId, uint256 amount);
 
     // 初期流動性の追加
-    function addInitLiqidity(uint256 amount) external;
+    // function addInitLiqidity(uint256 amount) external;
+    function mintOptions(uint256[] memory ids, uint256[] memory values, bool flag) external;
+    function burnOptions(uint256[] memory ids, uint256[] memory values, bool flag) external;
 
     function mintHandler(uint256 opt, uint256 amount) external;
     function burnHandler(uint256 opt, uint256 amount) external;
@@ -25,6 +34,10 @@ interface IPMT is IERC1155 {
 
     // ユーザーの選択肢の残高
     // オプショントークンプールの残高
+    /* <<===  GETTER FUNCTIONS  ===>> */
+    function getMarketInfo() external view returns (MarketInfo memory);
+    function getInitLiquidityFlag() external view returns (bool);
+    function getCollateralPoolBalance() external view returns (uint256);
     function balanceOfUserOption(address user, uint256 optionId) external view returns (uint256);
     function getBalanceOfOptionPool(uint256 optionId) external view returns (uint256);
     function getBalanceOfCollateralPool() external view returns (uint256);
@@ -32,12 +45,9 @@ interface IPMT is IERC1155 {
     function getUserOptionDeposits(address user, uint256 opt) external view returns (uint256);
     function getUserRedeemAmount(address user) external view returns (uint256);
 
-    // function getQuestion() external view returns (string memory);
-	// function getOptions() external view returns (string[] memory);
-    // function getCollateralToken() external view returns (address);
-    // function getFlag() external view returns (bool);
-    // function getExecDate() external view returns (uint256);
-
+    /* <<===  SETTER FUNCTIONS  ===>> */
+    function setInitLiquidityFlag(bool f) external;
+    function setCollateralPoolBalance(uint256 amount) external;
     function setBalanceOfOptionPool(uint256 opt, uint256 amount) external;
     function setBalanceCollateralPool(uint256 amount) external;
     function setUserTokenBalances(address user, uint256 opt, uint256 amount) external;

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "../interface/IPMT.sol";
+import "../interface/IPMTStateManager.sol";
 import "../interface/IOracle.sol";
 import "hardhat/console.sol";
 
@@ -10,7 +10,7 @@ interface IOA {
 	function getResult() external view returns (uint256);
 }
 
-contract OptionMarket {
+contract OptionExchange {
 	uint256 constant SCALE = 10**18;
 	mapping(address => bool) public isTransactionActive;
 	mapping(address => mapping(address => uint256)) public safeRedeem;
@@ -32,7 +32,7 @@ contract OptionMarket {
 		uint256 dx, 
 		bool isBuy
 	) public view returns (uint256 dy, uint256 newCollateralBalance, uint256 newOptionBalance) {
-		IPMT t = IPMT(target);
+		IPMTStateManager t = IPMTStateManager(target);
 		(, , , , , , , string[] memory options, ) = t.getAllData();
 		require(opt < options.length, "Invalid option selected");
 		require(dx > 0, "Deposit amount must be greater than zero");
@@ -65,7 +65,7 @@ contract OptionMarket {
 
 	function buyOption(address target, uint256 opt, uint256 dx) public returns (uint256 acquiredOptions, uint256 dy) {
 		require(isTransactionActive[msg.sender] == false, "Now transaction active.");
-        IPMT t = IPMT(target);
+        IPMTStateManager t = IPMTStateManager(target);
 		(, , , , , , , string[] memory options, bool initLiquidityFlag) = t.getAllData();
 		require(initLiquidityFlag == true, "This market is not open.");
 		require(opt < options.length, "Invalid option selected");
@@ -110,7 +110,7 @@ contract OptionMarket {
 		// TODO: check oracle result
 		IOracle o = IOracle(oracle);
 		require(o.getResult() == opt, "The price of this option is 0.");
-		IPMT t = IPMT(target);
+		IPMTStateManager t = IPMTStateManager(target);
 		uint256 collateralBalanceBefore = t.getBalanceOfCollateralPool();
 		uint256 optionBalanceBefore = t.getBalanceOfOptionPool(opt);
 		uint256 userOptionBalance = t.balanceOfUserOption(msg.sender, opt);
@@ -123,7 +123,7 @@ contract OptionMarket {
 		isTransactionActive[msg.sender] = true;
 	}
 	function _changeState(address target, uint256 opt, uint256 dy, uint256 dx, uint256 collateralAfter, uint256 optionBalanceAfter) internal {
-		IPMT t = IPMT(target);
+		IPMTStateManager t = IPMTStateManager(target);
 		t.setBalanceCollateralPool(collateralAfter);
 		t.setBalanceOfOptionPool(opt, optionBalanceAfter);
 		t.setUserTokenBalances(msg.sender, opt, dx);
@@ -133,7 +133,7 @@ contract OptionMarket {
 	}
     function sellOption(address target, uint256 opt, uint256 dx) public returns (uint256 dy) {
 		require(isTransactionActive[msg.sender] == false, "Now transaction active.");
-        IPMT t = IPMT(target);
+        IPMTStateManager t = IPMTStateManager(target);
 		(, address oracleAddress, , , , , uint256 executionDate, string[] memory options, bool initLiquidityFlag) = t.getAllData();
 		require(initLiquidityFlag == true, "This market is not open.");
 		require(opt < options.length, "Invalid option selected");
@@ -160,7 +160,7 @@ contract OptionMarket {
 
 	function approveRedeem(address target) external {
 		require(isTransactionActive[msg.sender] == true, "Now transaction not active.");
-		IPMT t = IPMT(target);
+		IPMTStateManager t = IPMTStateManager(target);
 		(, , address collateralToken, , , , , , ) = t.getAllData();
 		require(
             // IERC20(t.getCollateralToken()).approve(target, safeRedeem[target][msg.sender]),
@@ -172,7 +172,7 @@ contract OptionMarket {
 	function redeemCollateral(address target) external {
 		require(isTransactionActive[msg.sender] == true, "Now transaction not active.");
 		require(safeRedeem[target][msg.sender] > 0, "Not deposited.");
-		IPMT t = IPMT(target);
+		IPMTStateManager t = IPMTStateManager(target);
 		t.redeemHandler(msg.sender, safeRedeem[target][msg.sender]);
 		safeRedeem[target][msg.sender] = 0;
 		isTransactionActive[msg.sender] = false;

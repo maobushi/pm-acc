@@ -15,10 +15,13 @@ describe("Prediction Market Test.", function () {
 		const PMFactory = await ethers.getContractFactory("PMTFactory");
 		const pmf = await PMFactory.deploy();
 
-		const OptionMarket = await ethers.getContractFactory("OptionMarket");
+		const PMImpl = await ethers.getContractFactory("PMTImpl");
+		const pmi = await PMImpl.deploy();
+
+		const OptionMarket = await ethers.getContractFactory("OptionExchange");
 		const om = await OptionMarket.deploy();
 
-		return { erc20, pmf, of, om, deployer, other };
+		return { erc20, pmf, pmi, of, om, deployer, other };
 	}
 
 	it("Overall operation check [1].", async function () {
